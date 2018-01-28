@@ -13,3 +13,4 @@ doc/*.txt
 doc/**/*.txt
 
 venv/
+.idea/
