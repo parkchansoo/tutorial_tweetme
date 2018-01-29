@@ -1,5 +1,16 @@
 from django.contrib import admin
 from .models import Tweet
+from .forms import TweetModelForm
 
 
-admin.site.register(Tweet)
+
+
+class TweetModelFormAdmin(admin.ModelAdmin):
+
+    form = TweetModelForm
+    # class Meta:
+    #     model = Tweet
+    #     form = TweetModelForm
+
+
+admin.site.register(Tweet, TweetModelFormAdmin)
