@@ -1,6 +1,30 @@
+from django import forms
+from django.forms.utils import ErrorList
+
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import DetailView, ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import DetailView, ListView, CreateView
 from .models import Tweet
+
+from  .forms import TweetModelForm
+from .mixins import FormUserNeededMixin
+
+
+class TweetCreateView(FormUserNeededMixin, CreateView):
+    # queryset = Tweet.objects.all()
+    form_class = TweetModelForm
+    template_name = 'tweets/create_view.html'
+    success_url = '/tweets/create'
+    # login_url = '/admin/login/'
+
+    # def form_valid(self, form):
+    #     if self.request.user.is_authenticated():
+    #         form.instance.user = self.request.user
+    #         return super(TweetCreateView, self).form_valid(form)
+    #     else:
+    #         form._errors[forms.forms.NON_FIELD_ERRORS] = ErrorList(["User must be logged in to continue"])
+    #         return self.form_invalid(form)
+
 
 '''
 we don't have to give template name class based view

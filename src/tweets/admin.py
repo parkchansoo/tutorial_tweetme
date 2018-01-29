@@ -6,11 +6,8 @@ from .forms import TweetModelForm
 
 
 class TweetModelFormAdmin(admin.ModelAdmin):
-
-    form = TweetModelForm
-    # class Meta:
-    #     model = Tweet
-    #     form = TweetModelForm
+    class Meta:
+        model = Tweet
 
 
 admin.site.register(Tweet, TweetModelFormAdmin)
