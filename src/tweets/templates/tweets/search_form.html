@@ -1,4 +1,9 @@
-<form method="GET" action="{% url 'tweets:list' %}">
-    <input type="text" name="q" placeholder="Search" value="{{ request.GET.q }}" />
-    <input type="submit" value="Search" />
+<form method="GET" action="{% url 'tweets:list' %}" class="form-inline">
+    <div class="form-group mb-2">
+        <label for="staticEmail2" class="sr-only">search bar</label>
+        <input type="text" placeholder="Search" value="{{ request.GET.q }}" class="form-control" name="q" aria-describedby="emailHelp" />
+    </div>
+    <div class="form-check">
+    </div>
+    <input type="submit" class="btn btn-primary mb-2" value="Search" />
 </form>
