@@ -3,11 +3,11 @@ from django.forms.utils import ErrorList
 
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import DetailView, ListView, CreateView
+from django.views.generic import DetailView, ListView, CreateView, UpdateView
 from .models import Tweet
 
 from  .forms import TweetModelForm
-from .mixins import FormUserNeededMixin
+from .mixins import FormUserNeededMixin, UserOwnerMixin
 
 
 class TweetCreateView(FormUserNeededMixin, CreateView):
@@ -17,13 +17,12 @@ class TweetCreateView(FormUserNeededMixin, CreateView):
     success_url = '/tweets/create'
     # login_url = '/admin/login/'
 
-    # def form_valid(self, form):
-    #     if self.request.user.is_authenticated():
-    #         form.instance.user = self.request.user
-    #         return super(TweetCreateView, self).form_valid(form)
-    #     else:
-    #         form._errors[forms.forms.NON_FIELD_ERRORS] = ErrorList(["User must be logged in to continue"])
-    #         return self.form_invalid(form)
+
+class TweetUpdateView(LoginRequiredMixin, UserOwnerMixin, UpdateView):
+    queryset = Tweet.objects.all()
+    form_class = TweetModelForm
+    template_name = 'tweets/update_view.html'
+    success_url = "/tweets/"
 
 
 '''
