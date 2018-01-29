@@ -1,9 +1,10 @@
 from django import forms
 from django.forms.utils import ErrorList
+from django.urls import reverse
 
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import DetailView, ListView, CreateView, UpdateView
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 from .models import Tweet
 
 from  .forms import TweetModelForm
@@ -11,18 +12,20 @@ from .mixins import FormUserNeededMixin, UserOwnerMixin
 
 
 class TweetCreateView(FormUserNeededMixin, CreateView):
-    # queryset = Tweet.objects.all()
     form_class = TweetModelForm
     template_name = 'tweets/create_view.html'
-    success_url = '/tweets/create'
-    # login_url = '/admin/login/'
 
 
 class TweetUpdateView(LoginRequiredMixin, UserOwnerMixin, UpdateView):
     queryset = Tweet.objects.all()
     form_class = TweetModelForm
     template_name = 'tweets/update_view.html'
-    success_url = "/tweets/"
+
+
+class TweetDeleteView(DeleteView):
+    model = Tweet
+    template_name = "tweets/delete_view.html"
+    success_url = reverse("tweets:list")
 
 
 '''

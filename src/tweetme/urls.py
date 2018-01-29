@@ -25,7 +25,7 @@ from django.conf.urls import include
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', home, name='home'),
-    url(r'^tweets/', include('tweets.urls')),
+    url(r'^tweets/', include('tweets.urls', namespace='tweets')),
 ]
 
 if settings.DEBUG:
