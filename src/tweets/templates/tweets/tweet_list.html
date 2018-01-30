@@ -2,12 +2,50 @@
 
 {% block title %} tweet list | {{ super.block }} {% endblock title %}
 
+{% block script %}}
+<script>
+    $(document).ready(function(){
+        console.log("working");
+
+        $.ajax({
+            url: "{% url 'tweets-api:list' %}", // "/api/tweets/",
+            method: "GET",
+            success: function(data){
+                // console.log(data)
+                $.each(data, function(key, value){
+                    // console.log(key)
+                    // console.log(value.user.username)
+                    // console.log(value.content)
+                    var tweetKey = key;
+                    var tweetContent = value.content;
+                    var tweetUser = value.user.username;
+                    $("#tweet-container").append(
+                        "<br>" + "<li class='media'>" + "<img class=\"d-flex mr-3\" src=\"...\" alt=\"...\">"
+                        + "<div class=\"media-body\">" + "<h5 class=\"mt-0 mb-1\">" + tweetUser + "</h5>" + "<br>"
+                        + tweetContent + "<br>"  + " | " + "<a href='{{ object.get_absolute_url}}'>view</a>"
+                        + "</div>" + "</li>" + "<hr>"
+                    )
+                })
+            },
+            error: function(data){
+                console.log("error")
+                console.log(data)
+            }
+        })
+    });
+
+</script>
+{% endblock script %}
+
+
 {% block content %}
     <ul class="list-unstyled">
-    {% if not request.GET.q %}
-            {% include "tweets/form.html" with form=create_form action_url=create_url btn_title='Tweet' %}
-    {% endif %}
+    <!--{% if not request.GET.q %}-->
+            <!--{% include "tweets/form.html" with form=create_form action_url=create_url btn_title='Tweet' %}-->
+    <!--{% endif %}-->
+    <container id="tweet-container">
 
+    </container>
     {% for object in object_list %}
         <li class="media">
             {% if object.image %}
