@@ -1,13 +1,13 @@
 from django import forms
 from django.forms.utils import ErrorList
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 from .models import Tweet
 
-from  .forms import TweetModelForm
+from .forms import TweetModelForm
 from .mixins import FormUserNeededMixin, UserOwnerMixin
 
 from django.db.models import Q
@@ -60,9 +60,10 @@ class TweetListView(ListView):
             )
         return qs
 
-
     def get_context_data(self, *args, **kwargs):
         context = super(TweetListView, self).get_context_data(*args, **kwargs)
         # context["another_list"] = Tweet.objects.all()
         # print(context)
+        context['create_form'] = TweetModelForm()
+        context['create_url'] = reverse_lazy("tweets:create")
         return context

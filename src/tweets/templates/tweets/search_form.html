@@ -1,9 +1,6 @@
-<form method="GET" action="{% url 'tweets:list' %}" class="form-inline">
-    <div class="form-group mb-2">
-        <label for="staticEmail2" class="sr-only">search bar</label>
-        <input type="text" placeholder="Search" value="{{ request.GET.q }}" class="form-control" name="q" aria-describedby="emailHelp" />
-    </div>
+<form method="GET" action="{% url 'tweets:list' %}" class="form-inline my-2 my-lg-0">
+    <input type="text" placeholder="Search" value="{{ request.GET.q }}" class="form-control mr-sm-2" name="q" aria-describedby="emailHelp" />
     <div class="form-check">
     </div>
-    <input type="submit" class="btn btn-primary mb-2" value="Search" />
+    <input type="submit" class="btn btn-outline-success my-2 my-sm-0" value="Search" />
 </form>

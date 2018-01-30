@@ -1,11 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}Tweet list | {{ super.block }}{% endblock title %}
+{% block title %} tweet list | {{ super.block }} {% endblock title %}
 
 {% block content %}
-    {% include "tweets/search_form.html" %} <br/>
     <ul class="list-unstyled">
-        {% for object in object_list %}
+    {% if not request.GET.q %}
+            {% include "tweets/form.html" with form=create_form action_url=create_url btn_title='Tweet' %}
+    {% endif %}
+
+    {% for object in object_list %}
         <li class="media">
             {% if object.image %}
                 <img class="d-flex mr-3" src="..." alt="...">
