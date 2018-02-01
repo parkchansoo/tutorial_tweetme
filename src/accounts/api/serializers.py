@@ -17,5 +17,6 @@ class UserDisplaySerializer(serializers.ModelSerializer):
             'follower_count',
         ]
 
+
     def get_follower_count(self, obj):
         return 0

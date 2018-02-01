@@ -1,6 +1,6 @@
 {% load crispy_forms_tags %}
 
-<form class="form-inline my-2 my-lg-0" method="POST" action="{% if action_url %}{{ action_url }}{% endif %}">
+<form {% if form_id %} id="'{{ form_id }}" {% endif %} class="form-inline my-2 my-lg-0" method="POST" action="{% if action_url %}{{ action_url }}{% endif %}">
     {% csrf_token %}
     {{ form|crispy }}
     <input type="submit" value="{{ btn_title }}" class="btn btn-outline-success my-2 my-sm-0"/>

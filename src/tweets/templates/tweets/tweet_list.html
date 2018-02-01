@@ -4,34 +4,80 @@
 
 {% block script %}}
 <script>
+
+    function getParameterByName(name, url) {
+        console.log(name)
+        console.log(url)
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        console.log(name)
+        console.log(url)
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
     $(document).ready(function(){
         console.log("working");
 
-        $.ajax({
-            url: "{% url 'tweets-api:list' %}", // "/api/tweets/",
-            method: "GET",
-            success: function(data){
-                // console.log(data)
-                $.each(data, function(key, value){
-                    // console.log(key)
-                    // console.log(value.user.username)
-                    // console.log(value.content)
+        var query = getParameterByName("q")
+        var tweetList = [];
+        console.log(query)
+
+        function parseTweets() {
+            if (tweetList.length == 0) {
+                console.log("no tweets list")
+                $("#tweet-container").text("no tweets currently found");
+            } else {
+                $.each(tweetList, function (key, value) {
+
+                    console.log(value.date_dsiplay);
                     var tweetKey = key;
+                    var dateDisplay = value.date_dsiplay;
                     var tweetContent = value.content;
                     var tweetUser = value.user.username;
                     $("#tweet-container").append(
-                        "<br>" + "<li class='media'>" + "<img class=\"d-flex mr-3\" src=\"...\" alt=\"...\">"
+                        "<br>" + "<li class='media'>" + "<img class=\"d-flex mr-3\" src=\"#\" alt=\"#\">"
                         + "<div class=\"media-body\">" + "<h5 class=\"mt-0 mb-1\">" + tweetUser + "</h5>" + "<br>"
-                        + tweetContent + "<br>"  + " | " + "<a href='{{ object.get_absolute_url}}'>view</a>"
+                        + tweetContent + " | " + dateDisplay + "<br>" + " | " + "<a href='{{ object.get_absolute_url}}'>view</a>"
                         + "</div>" + "</li>" + "<hr>"
                     )
                 })
-            },
-            error: function(data){
-                console.log("error")
-                console.log(data)
             }
-        })
+        }
+
+        function fetchTweets(){
+            console.log('fetching...')
+            $.ajax({
+                url: "/api/tweets/",
+                data: {
+                    "q": query
+                },
+                method: "GET",
+                success: function(data){
+                    tweetList = data
+                    parseTweets()
+                    console.log(query)
+                },
+                error: function(data){
+                    console.log("error")
+                    console.log(data)
+                }
+            });
+        }
+        fetchTweets()
+
+
+        $("#tweets-form").submit(function(event){
+            event.preventDefault()
+
+            var this_ = $(this);
+            console.log(event);
+            console.log(this_);
+            fetchTweets()
+        });
     });
 
 </script>
@@ -40,16 +86,17 @@
 
 {% block content %}
     <ul class="list-unstyled">
-    <!--{% if not request.GET.q %}-->
-            <!--{% include "tweets/form.html" with form=create_form action_url=create_url btn_title='Tweet' %}-->
-    <!--{% endif %}-->
+    {% if not request.GET.q %}
+        {% include "tweets/form.html" with form=create_form action_url=create_url btn_title='Tweet' form_id='tweets-form' %}
+    {% endif %}
+
     <container id="tweet-container">
 
     </container>
     {% for object in object_list %}
         <li class="media">
             {% if object.image %}
-                <img class="d-flex mr-3" src="..." alt="...">
+                <img class="d-flex mr-3" src="#" alt="#">
             {% endif %}
             <div class="media-body">
                 <h5 class="mt-0 mb-1">{{ object.user }}</h5>
@@ -61,10 +108,10 @@
         <hr/>
     </ul>
     {% empty %}
-        {% if request.GET.q %}
-            <p> no tweet found</p>
-        {% else %}
-            <p>No tweets yet.</p>
+        {% if not request.GET.q %}
+            <div class="">
+                {% include "tweets/form.html" with form=create_form action_url=create_url btn_title='Tweet' form_id='tweets-form' %
+            </div>
         {% endif %}
     {% endfor %}
 {% endblock content %}
