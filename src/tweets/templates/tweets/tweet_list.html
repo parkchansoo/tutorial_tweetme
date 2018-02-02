@@ -24,10 +24,11 @@
 
         var query = getParameterByName("q")
         var tweetList = [];
+        var nextTweetUrl;
         console.log(query)
 
         function parseTweets() {
-            if (tweetList.length == 0) {
+            if (tweetList == 0) {
                 console.log("no tweets list")
                 $("#tweet-container").text("no tweets currently found");
             } else {
@@ -48,18 +49,28 @@
             }
         }
 
-        function fetchTweets(){
+        function fetchTweets(url){
             console.log('fetching...')
+            var fetchUrl;
+            if(!url) {
+                fetchUrl = "/api/tweets/"
+            } else {
+                fetchUrl = url
+            }
             $.ajax({
-                url: "/api/tweets/",
+                url: fetchUrl,
                 data: {
                     "q": query
                 },
                 method: "GET",
                 success: function(data){
-                    tweetList = data
+                    tweetList = data.result
+                    if(data.next){
+                        nextTweetUrl = data.next
+                    } else {
+                        $("#loadmore").css("display", "none")
+                    }
                     parseTweets()
-                    console.log(query)
                 },
                 error: function(data){
                     console.log("error")
@@ -67,7 +78,21 @@
                 }
             });
         }
-        fetchTweets()
+
+        fetchTweets();
+
+        // $("#loadmore").bind("click", function(evnet){
+        //     event.preventDefault()
+        // });
+        $("#loadmore").click(function(event){
+            event.preventDefault()
+            if(nextTweetUrl) {
+                fetchTweets(nextTweetUrl)
+                console.log(nextTweetUrl)
+            }
+            // load more item
+
+        })
 
 
         $("#tweets-form").submit(function(event){
@@ -94,18 +119,18 @@
 
     </container>
     {% for object in object_list %}
-        <li class="media">
-            {% if object.image %}
-                <img class="d-flex mr-3" src="#" alt="#">
-            {% endif %}
-            <div class="media-body">
-                <h5 class="mt-0 mb-1">{{ object.user }}</h5>
-                {{ object.timestamp }}<br>
-                {{ object.content }}<br>
-                <a href="{{ object.get_absolute_url}}">view</a>
-            </div>
-        </li>
-        <hr/>
+        <!--<li class="media">-->
+            <!--{% if object.image %}-->
+                <!--<img class="d-flex mr-3" src="#" alt="#">-->
+            <!--{% endif %}-->
+            <!--<div class="media-body">-->
+                <!--<h5 class="mt-0 mb-1">{{ object.user }}</h5>-->
+                <!--{{ object.timestamp }}<br>-->
+                <!--{{ object.content }}<br>-->
+                <!--<a href="{{ object.get_absolute_url}}">view</a>-->
+            <!--</div>-->
+        <!--</li>-->
+        <!--<hr/>-->
     </ul>
     {% empty %}
         {% if not request.GET.q %}
@@ -114,4 +139,6 @@
             </div>
         {% endif %}
     {% endfor %}
+    <a href="#" id="loadmore">loadmore</a>
+
 {% endblock content %}

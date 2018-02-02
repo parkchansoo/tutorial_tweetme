@@ -26,6 +26,7 @@ from django.conf.urls import include
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', TweetListView.as_view(), name='home'),
+    url(r'^profile/', include('accounts.urls', namespace='profiles')),
     url(r'^tweets/', include('tweets.urls', namespace='tweets')),
     url(r'^api/tweets/', include('tweets.api.urls', namespace='tweets-api')),
 ]

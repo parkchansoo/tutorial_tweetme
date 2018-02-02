@@ -1,9 +1,10 @@
 from rest_framework import generics
+from rest_framework import permissions
 from django.db.models import Q
 
 from .serializers import TweetModelSerializer
 from tweets.models import Tweet
-from rest_framework import permissions
+from .pagination import StandardResultsPagination
 
 
 class TweetCreateAPIView(generics.CreateAPIView):
@@ -17,11 +18,11 @@ class TweetCreateAPIView(generics.CreateAPIView):
 class TweetListAPIView(generics.ListAPIView):
     serializer_class = TweetModelSerializer
     # permission_classes =
+    pagination_class = StandardResultsPagination
 
     def get_queryset(self, *args, **kwargs):
-        qs = Tweet.objects.all()
-        print(self.request.GET)
         query = self.request.GET.get("q", None)
+        qs = Tweet.objects.all().order_by("-timestamp")
         if query is not None:
             qs = qs.filter(
                 Q(content__icontains=query) |
