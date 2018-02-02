@@ -2,10 +2,32 @@
 
 {% block content %}
 
-    <h1>{{ object.username }}</h1>><br>
+    <script>
+        console.log( '{{ object }}' );
+    </script>
+    <h1>{{ object.username }}</h1>
+    <p>Followers: {{ object.followed_by.all.count }}</p>
+    <p><a class="btn btn-link" href="{% url 'profiles:follow' username=object.username %}">Follow</a></p><br><hr>
     <h2>Tweets</h2>
     {% for tweet in object.tweet_set.all %}
         {{ tweet }}<br><hr>
     {% endfor %}
+    <h2>Following</h2>
+        following: {{ object.profile }}<br><hr>
+        {% for user in object.profile.get_following %}
+        <a href="/profile/{{ user.username }}">{{ user.username }}</a>><br><hr>
+        {% empty %}
+            Not following any users
+        {% endfor %}
+
+    <hr>
+    <h2>Followed_by</h2>
+        {% for profile in object.followed_by.all %}
+            <a href="/profile/{{ profile.user.username }}">{{ profile.user.username }}<br><hr>
+        {% empty %}
+            Not followed by any users
+        {% endfor %}
+
+    <h1>{{ objects.following.count }}</h1>
 
 {% endblock content %}

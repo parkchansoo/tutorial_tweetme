@@ -91,7 +91,6 @@
                 console.log(nextTweetUrl)
             }
             // load more item
-
         })
 
 
@@ -119,18 +118,18 @@
 
     </container>
     {% for object in object_list %}
-        <!--<li class="media">-->
-            <!--{% if object.image %}-->
-                <!--<img class="d-flex mr-3" src="#" alt="#">-->
-            <!--{% endif %}-->
-            <!--<div class="media-body">-->
-                <!--<h5 class="mt-0 mb-1">{{ object.user }}</h5>-->
-                <!--{{ object.timestamp }}<br>-->
-                <!--{{ object.content }}<br>-->
-                <!--<a href="{{ object.get_absolute_url}}">view</a>-->
-            <!--</div>-->
-        <!--</li>-->
-        <!--<hr/>-->
+        <li class="media">
+            {% if object.image %}
+                <img class="d-flex mr-3" src="#" alt="#">
+            {% endif %}
+            <div class="media-body">
+                <h5 class="mt-0 mb-1"><a href="#" id="user_url">{{ object.user }}</a></h5>
+                {{ object.timestamp }}<br>
+                {{ object.content }}<br>
+                <a href="{{ object.get_absolute_url}}">view</a>
+            </div>
+        </li>
+        <hr/>
     </ul>
     {% empty %}
         {% if not request.GET.q %}
