@@ -7,7 +7,13 @@
     </script>
     <h1>{{ object.username }}</h1>
     <p>Followers: {{ object.followed_by.all.count }}</p>
-    <p><a class="btn btn-link" href="{% url 'profiles:follow' username=object.username %}">Follow</a></p><br><hr>
+    <p><a class="btn btn-link" href="{{ object.profile.get_following_url }}">
+        {% if following %}
+            Unfollow
+        {% else %}
+            Follow
+        {% endif %}
+    </a></p></br></hr>
     <h2>Tweets</h2>
     {% for tweet in object.tweet_set.all %}
         {{ tweet }}<br><hr>
