@@ -20,7 +20,10 @@ class RetweetView(View):
         tweet = get_object_or_404(Tweet, pk=pk)
         if request.user.is_authenticated():
             new_tweet = Tweet.objects.retweet(request.user, tweet)
-            return HttpResponseRedirect(new_tweet.get_absolute_url())
+            if new_tweet:
+                return HttpResponseRedirect(new_tweet.get_absolute_url())
+            else:
+                pass
         return HttpResponseRedirect(tweet.get_absolute_url())
 
 

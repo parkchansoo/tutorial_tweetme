@@ -17,6 +17,11 @@ class TweetManager(models.Manager):
             og_parent = parent_obj.parent
         else:
             og_parent = parent_obj
+
+        qs = self.get_queryset().filter(user=user, parent=og_parent)
+        if qs.exists():
+            return None
+
         obj = self.model(
             parent  =og_parent,
             user    =user,
@@ -28,12 +33,11 @@ class TweetManager(models.Manager):
 
 
 class Tweet(models.Model):
-    # user
     parent = models.ForeignKey("self", blank=True, null=True)
-    user        = models.ForeignKey(settings.AUTH_USER_MODEL, default=1)
-    content     = models.CharField(max_length=140, default="tweet anyting", validators=[validate_content])
-    updated_at  = models.DateTimeField(auto_now=True)
-    timestamp   = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1)
+    content = models.CharField(max_length=140, default="tweet anyting", validators=[validate_content])
+    updated_at = models.DateTimeField(auto_now=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     objects = TweetManager()
 
