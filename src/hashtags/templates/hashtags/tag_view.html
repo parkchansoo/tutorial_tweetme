@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <ul class="list-unstyled">
+
+        <container id="tweet-container">
+            <h1>{{ obj.tag }}</h1>
+        </container>
+        <div class="media-body">
+            {% for tweet in obj.get_tweets %}
+            {{ tweet.content }} <br/>
+            {% endfor %}
+        </div>
+    </ul>
+
+{% endblock content %}

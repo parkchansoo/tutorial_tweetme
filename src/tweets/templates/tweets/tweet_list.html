@@ -27,6 +27,15 @@
         var nextTweetUrl;
         console.log(query)
 
+        function updateHashLinks(){
+            $(".media-body").each(function(data){
+                var hashtagRegax = /(^|\s)#([\w\d-]+)/g
+                var newText = $(this).html().replace(hashtagRegax, "$1<a href='/tags/$2/'>#$2</a>")
+                $(this).html(newText)
+            })
+        }
+
+
         function parseTweets() {
             if (tweetList == 0) {
                 console.log("no tweets list")
@@ -71,6 +80,7 @@
                         $("#loadmore").css("display", "none")
                     }
                     parseTweets()
+                    updateHashLinks()
                 },
                 error: function(data){
                     console.log("error")
@@ -101,6 +111,7 @@
             console.log(event);
             console.log(this_);
             fetchTweets()
+            updateHashLinks()
         });
     });
 
@@ -126,6 +137,7 @@
                 <h5 class="mt-0 mb-1"><a href="#" id="user_url">{{ object.user }}</a></h5>
                 {{ object.timestamp }}<br>
                 {{ object.content }}<br>
+                #hello<br>
                 <a href="{{ object.get_absolute_url}}">view</a>
             </div>
         </li>
