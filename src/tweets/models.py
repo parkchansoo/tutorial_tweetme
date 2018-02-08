@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 
 from .validators import validate_content
+from hashtags.signals import parsed_hashtags
 
 # def validate_content(value):
 #     content = value
@@ -60,6 +61,7 @@ def tweet_save_receiver(sender, instance, created, *args, **kwargs):
     if created and not instance.parent:
         user_regex = r'@(?P<username>[\w.@+-]+)'
         usernames = re.findall(user_regex, instance.content)
+
         # if m:
         #     username = m.group("username")
         #     print(username)
@@ -67,10 +69,9 @@ def tweet_save_receiver(sender, instance, created, *args, **kwargs):
 
         hash_regex = r'#(?P<hashtag>[\w.@+-]+)'
         hashtags = re.findall(hash_regex, instance.content)
-        # if h_m:
-        #     hashtag = m.group("hashtag")
-        #     print(hashtag)
-        #     # send hashtag signal to user
+        print(hashtags)
+        # send notification to user here.
+        parsed_hashtags.send(sender=instance.__class__, hashtag_list=hashtags)
 
 
 post_save.connect(tweet_save_receiver, sender=Tweet)
