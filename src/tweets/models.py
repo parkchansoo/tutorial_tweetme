@@ -17,10 +17,12 @@ from hashtags.signals import parsed_hashtags
 
 class TweetManager(models.Manager):
     def retweet(self, user, parent_obj):
-        if parent_obj.parent:
+        print(type(parent_obj[0]))
+
+        if parent_obj[0].parent:
             og_parent = parent_obj.parent
         else:
-            og_parent = parent_obj
+            og_parent = parent_obj[0]
 
         qs = self.get_queryset().filter(user=user, parent=og_parent)
         if qs.exists():
@@ -35,13 +37,31 @@ class TweetManager(models.Manager):
         print(obj.parent.id)
         return obj
 
+    def like_toggle(self, user, tweet_obj):
+        print(type(tweet_obj))
+        print(user)
+        if user in tweet_obj.liked.all():
+            print('user is in liked model')
+            is_liked = False
+            tweet_obj.liked.remove(user)
+            print(tweet_obj.liked.count())
+        else:
+            print('user isnt on liked model')
+            is_liked = True
+            tweet_obj.liked.add(user)
+            print(tweet_obj.liked.count())
+        print(is_liked)
+        return is_liked
+
 
 class Tweet(models.Model):
     parent = models.ForeignKey("self", blank=True, null=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     content = models.CharField(max_length=140, default="tweet anyting", validators=[validate_content])
+    liked = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='liked')
     updated_at = models.DateTimeField(auto_now=True)
     timestamp = models.DateTimeField(auto_now_add=True)
+    reply = models.BooleanField(verbose_name='is a reply', default=False)
 
     objects = TweetManager()
 
@@ -56,6 +76,7 @@ class Tweet(models.Model):
     #     if content == 'abc':
     #         raise ValidationError("Content cannnot be abc")
     #     return super(Tweet, self).clean(*args, **kwargs)\
+
 
 def tweet_save_receiver(sender, instance, created, *args, **kwargs):
     if created and not instance.parent:

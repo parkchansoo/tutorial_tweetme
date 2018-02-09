@@ -7,12 +7,15 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
-from .models import Tweet
+from django.db.models import Q
 
+from rest_framework.views import APIView
+from rest_framework import permissions
+from rest_framework.response import Response
+
+from .models import Tweet
 from .forms import TweetModelForm
 from .mixins import FormUserNeededMixin, UserOwnerMixin
-
-from django.db.models import Q
 
 
 class RetweetView(View):
